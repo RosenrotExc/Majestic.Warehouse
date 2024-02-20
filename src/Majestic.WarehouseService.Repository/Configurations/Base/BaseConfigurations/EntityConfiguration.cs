@@ -7,10 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Majestic.WarehouseService.Repository.Configurations.Base.BaseConfigurations
 {
-    public class EntityConfiguration<TBaseEntity, TBaseEntityState>
+    public class EntityConfiguration<TBaseEntity, TBaseEntityState, TBaseEntityCode>
         : BaseConfiguration<TBaseEntity>
-            where TBaseEntityState : BaseEntityState
-            where TBaseEntity : class, IBaseEntity
+            where TBaseEntity : class, IBaseEntity<TBaseEntityState, TBaseEntityCode>
+                where TBaseEntityState : BaseEntityState
+                where TBaseEntityCode : BaseEntityCode
     {
         public override void Configure(EntityTypeBuilder<TBaseEntity> builder)
         {

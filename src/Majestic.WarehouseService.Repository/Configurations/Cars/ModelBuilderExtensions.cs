@@ -9,8 +9,8 @@ namespace Majestic.WarehouseService.Repository.Configurations.Cars
         public static ModelBuilder AddCarsConfiguration(this ModelBuilder modelBuilder)
         {
             // Two lines below should be added to support audit log
-            modelBuilder.AddEntityStateConfiguration<CarEntity, CarEntityState>();
             modelBuilder.AddEntityCodeConfiguration<CarEntityCode>();
+            modelBuilder.AddEntityStateConfiguration<CarEntity, CarEntityState, CarEntityCode>();
 
             modelBuilder.Entity<CarEntity>(new CarConfiguration().Configure);
 

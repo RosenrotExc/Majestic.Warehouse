@@ -16,5 +16,14 @@ namespace Majestic.WarehouseService.Repository.Models.Base
         public Initiator Initiator { get; set; }
         public string Task { get; set; }
         public string Message { get; set; }
+
+        protected BaseEntityState()
+        {
+        }
+
+        protected BaseEntityState(int id)
+        {
+            Id = id;
+        }
     }
 }

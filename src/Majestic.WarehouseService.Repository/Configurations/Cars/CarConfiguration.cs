@@ -4,12 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Majestic.WarehouseService.Repository.Configurations.Cars
 {
-    public class CarConfiguration : EntityConfiguration<CarEntity, CarEntityState>
+    public class CarConfiguration : EntityConfiguration<CarEntity, CarEntityState, CarEntityCode>
     {
         public override void Configure(EntityTypeBuilder<CarEntity> builder)
         {
-            base.Configure(builder);
-
             builder
                 .Property(b => b.CarName)
                 .IsRequired()

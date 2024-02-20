@@ -1,12 +1,12 @@
-﻿using Majestic.WarehouseService.Repository.Models.Cars;
-
-namespace Majestic.WarehouseService.Repository.Models.Base
+﻿namespace Majestic.WarehouseService.Repository.Models.Base
 {
-    public interface IBaseEntity
+    public interface IBaseEntity<TBaseEntityState, TBaseEntityCode> 
+        where TBaseEntityState : BaseEntityState
+        where TBaseEntityCode : BaseEntityCode
     {
         int Id { get; set; }
         int CodeId { get; set; }
-        CarEntityCode Code { get; set; }
-        IList<CarEntityState> States { get; set; }
+        TBaseEntityCode Code { get; set; }
+        IList<TBaseEntityState> States { get; set; }
     }
 }

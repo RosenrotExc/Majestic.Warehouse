@@ -14,6 +14,8 @@ namespace Majestic.WarehouseService.Repository.Contexts
         {
             modelBuilder.AddInternalConfiguration();
             modelBuilder.AddCarsConfiguration();
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

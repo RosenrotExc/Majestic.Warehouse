@@ -10,11 +10,12 @@ namespace Majestic.WarehouseService.Repository.Configurations.Base.BaseExtension
 {
     public static class BaseModelBuilderExtensions
     {
-        public static ModelBuilder AddEntityStateConfiguration<TBaseEntity, TBaseEntityState>(this ModelBuilder modelBuilder)
-            where TBaseEntity : BaseEntity
+        public static ModelBuilder AddEntityStateConfiguration<TBaseEntity, TBaseEntityState, TBaseEntityCode>(this ModelBuilder modelBuilder)
+            where TBaseEntity : BaseEntity<TBaseEntityState, TBaseEntityCode>
             where TBaseEntityState : BaseEntityState
+            where TBaseEntityCode : BaseEntityCode
         {
-            modelBuilder.Entity<TBaseEntity>(new EntityConfiguration<TBaseEntity, TBaseEntityState>().Configure);
+            modelBuilder.Entity<TBaseEntity>(new EntityConfiguration<TBaseEntity, TBaseEntityState, TBaseEntityCode>().Configure);
             modelBuilder.Entity<TBaseEntityState>(new EntityStateConfiguration<TBaseEntityState>().Configure);
             return modelBuilder;
         }

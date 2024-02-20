@@ -2,7 +2,7 @@
 
 namespace Majestic.WarehouseService.Repository.Models.Cars
 {
-    public class CarEntity : BaseEntity
+    public class CarEntity : BaseEntity<CarEntityState, CarEntityCode>
     {
         public string CarName { get; set; }
         public string ModelName { get; set; }
