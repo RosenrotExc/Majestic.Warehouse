@@ -1,0 +1,15 @@
+﻿{
+  "profiles": {
+    "Majestic.WarehouseService.WebApi": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:7289;http://localhost:5030",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__Db": "Server=DESKTOP-R7TULMF\\SQLEXPRESS;Database=Majestic.Warehouse;Integrated Security=True;"
+      }
+    }
+  }
+}
