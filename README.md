@@ -1,2 +1,1 @@
-# Majestic.Warehouse
-Demo project
+# Majestic.WarehouseService
