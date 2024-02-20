@@ -1,0 +1,2 @@
+# Majestic.Warehouse
+Demo project
