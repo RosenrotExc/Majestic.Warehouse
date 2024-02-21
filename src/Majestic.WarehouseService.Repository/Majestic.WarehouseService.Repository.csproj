@@ -8,7 +8,6 @@
   <ItemGroup>
     <Folder Include="DependencyInjection\Configurations\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Extensions\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using Majestic.WarehouseService.Repository.Contexts;
 using Majestic.WarehouseService.Repository.Repository.Cars;
+using Majestic.WarehouseService.Repository.Repository.Initiators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +16,9 @@ namespace Majestic.WarehouseService.Repository.DependencyInjection.Modules
 
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            return services.AddTransient<ICarsRepository, CarsRepository>();
+            return services
+                .AddTransient<ICarsRepository, CarsRepository>()
+                .AddTransient<IInitiatorRepository, InitiatorRepository>();
         }
     }
 }

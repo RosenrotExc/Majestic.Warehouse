@@ -9,6 +9,7 @@ namespace Majestic.WarehouseService.Services.Services.Cars.GetCarQuery.Result
         public enum Reasons
         {
             UnexpectedError,
+            FailedToGetCars,
             NotFound
         }
 
@@ -16,9 +17,9 @@ namespace Majestic.WarehouseService.Services.Services.Cars.GetCarQuery.Result
 
         public Reasons? Reason { get; }
 
-        public PaginatedServiceResultWrapper<GetCarResponse, GetCarFilter> Result { get; set; }
+        public PaginatedServiceResultWrapper<IEnumerable<GetCarResponse>, GetCarFilter> Result { get; set; }
 
-        public GetCarsFlowResult(bool successful, PaginatedServiceResultWrapper<GetCarResponse, GetCarFilter> result, Reasons? reason)
+        public GetCarsFlowResult(bool successful, PaginatedServiceResultWrapper<IEnumerable<GetCarResponse>, GetCarFilter> result, Reasons? reason)
         {
             Successful = successful;
             Result = result;
@@ -30,12 +31,17 @@ namespace Majestic.WarehouseService.Services.Services.Cars.GetCarQuery.Result
             return new GetCarsFlowResult(false, null, Reasons.UnexpectedError);
         }
 
+        public static GetCarsFlowResult FailedToGetCars()
+        {
+            return new GetCarsFlowResult(false, null, Reasons.FailedToGetCars);
+        }
+
         public static GetCarsFlowResult NotFound()
         {
             return new GetCarsFlowResult(false, null, Reasons.NotFound);
         }
 
-        public static GetCarsFlowResult Success(PaginatedServiceResultWrapper<GetCarResponse, GetCarFilter> result)
+        public static GetCarsFlowResult Success(PaginatedServiceResultWrapper<IEnumerable<GetCarResponse>, GetCarFilter> result)
         {
             return new GetCarsFlowResult(true, result, null);
         }

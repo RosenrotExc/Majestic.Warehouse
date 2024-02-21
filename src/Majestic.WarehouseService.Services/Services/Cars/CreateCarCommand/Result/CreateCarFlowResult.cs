@@ -6,7 +6,8 @@ namespace Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand.Resu
     {
         public enum Reasons
         {
-            UnexpectedError
+            UnexpectedError,
+            ValidationError
         }
 
         public bool Successful { get; }
@@ -25,6 +26,11 @@ namespace Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand.Resu
         public static CreateCarFlowResult UnexpectedError()
         {
             return new CreateCarFlowResult(false, null, Reasons.UnexpectedError);
+        }
+
+        public static CreateCarFlowResult ValidationError()
+        {
+            return new CreateCarFlowResult(false, null, Reasons.ValidationError);
         }
 
         public static CreateCarFlowResult Success(ServiceResult result)

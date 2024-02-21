@@ -1,5 +1,5 @@
-﻿using Majestic.WarehouseService.Repository.Models.Cars;
-using Majestic.WarehouseService.Repository.Repository.Cars;
+﻿using Majestic.WarehouseService.Repository.Repository.Cars;
+using Majestic.WarehouseService.Services.Mappers.Cars;
 using Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand.CommandModels;
 using Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand.Result;
 using Majestic.WarehouseService.Services.Validators.Cars.CreateCarValidator;
@@ -12,29 +12,43 @@ namespace Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand
         private readonly ILogger<CreateCarCommandService> _logger;
         private readonly ICarsRepository _carsRepository;
         private readonly ICreateCarValidator _createCarValidator;
+        private readonly ICreateCarMapper _createCarMapper;
 
         public CreateCarCommandService(
             ILogger<CreateCarCommandService> logger,
             ICarsRepository carsRepository,
-            ICreateCarValidator createCarValidator)
+            ICreateCarValidator createCarValidator,
+            ICreateCarMapper createCarMapper)
         {
             _logger = logger;
             _carsRepository = carsRepository;
             _createCarValidator = createCarValidator;
+            _createCarMapper = createCarMapper;
         }
 
         public async Task<CreateCarFlowResult> HandleAsync(CreateCarModelCommand command)
         {
-            #region Validate
+            _logger.LogInformation("{name} {@command}", nameof(CreateCarCommandService), command);
+
             var validationResult = _createCarValidator.Validate(command.Request);
-            #endregion
+            if (!validationResult.IsSuccess)
+            {
+                _logger.LogError("{name} Validation failed {@validationResult} {@command}", nameof(CreateCarCommandService),
+                    validationResult, command);
+                return CreateCarFlowResult.ValidationError();
+            }
 
-            // map command to entity
-            var entity = new CarEntity();
+            var mappedModel = _createCarMapper.MapCarRequestToCarEntity(command.Request);
 
-            var result = await _carsRepository.CreateCarAsync(entity);
+            var result = await _carsRepository.CreateCarAsync(mappedModel, command.Initiator);
+            if (!result.IsSuccess)
+            {
+                _logger.LogError("{name} Failed to create car {@command}", nameof(CreateCarCommandService),
+                    command);
+                return CreateCarFlowResult.UnexpectedError();
+            }
 
-            return default;
+            return CreateCarFlowResult.Success(result);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Majestic.WarehouseService.Models.Misc;
-using Newtonsoft.Json;
 
 namespace Majestic.WarehouseService.Models.v1.GetCars.Request
 {
@@ -24,12 +23,22 @@ namespace Majestic.WarehouseService.Models.v1.GetCars.Request
         /// <summary>
         /// Search by owners price
         /// </summary>
-        public decimal OwnersPrice { get; set; }
+        public decimal? OwnersPriceFrom { get; set; }
+
+        /// <summary>
+        /// Search by owners price
+        /// </summary>
+        public decimal? OwnersPriceTo { get; set; }
 
         /// <summary>
         /// Search by dealers price
         /// </summary>
-        public decimal DealersPrice { get; set; }
+        public decimal? DealersPriceFrom { get; set; }
+
+        /// <summary>
+        /// Search by dealers price
+        /// </summary>
+        public decimal? DealersPriceTo { get; set; }
 
         /// <summary>
         /// Search by dealers notes
@@ -48,15 +57,26 @@ namespace Majestic.WarehouseService.Models.v1.GetCars.Request
         #endregion
 
         #region Pagination
-        [JsonProperty("pageNumber")]
+        /// <summary>
+        /// Set to true if you need to enable pagination
+        /// </summary>
+        public bool EnablePagination { get; set; } = true;
+
+        /// <summary>
+        /// Page number
+        /// </summary>
         public int? PageNumber { get; set; } = 1;
 
-        [JsonProperty("pageSize")]
+        /// <summary>
+        /// Page size
+        /// </summary>
         public int? PageSize { get; set; } = 10;
         #endregion
 
         #region Order
-        [JsonProperty("orderDirection")]
+        /// <summary>
+        /// Order direction
+        /// </summary>
         public OrderDirection OrderDirection { get; set; }
 
         /// <summary>
@@ -65,8 +85,14 @@ namespace Majestic.WarehouseService.Models.v1.GetCars.Request
         /// <remarks>
         /// Possible values: CarName, ModelName, OwnerName, DealersPrice, DateTimeCreated
         /// </remarks>
-        [JsonProperty("orderBy")]
         public string OrderBy { get; set; }
+        #endregion
+
+        #region Include
+        /// <summary>
+        /// Set to true if you need to get total count
+        /// </summary>
+        public bool IncludeTotalCount { get; set; } = false;
         #endregion
     }
 }

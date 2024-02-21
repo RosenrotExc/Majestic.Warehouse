@@ -8,7 +8,8 @@
       "applicationUrl": "https://localhost:7289;http://localhost:5030",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionStrings__Db": "Server=DESKTOP-R7TULMF\\SQLEXPRESS;Database=Majestic.Warehouse;Integrated Security=True;"
+        "ConnectionStrings__Db": "Server=DESKTOP-R7TULMF\\SQLEXPRESS;Database=Majestic.Warehouse;Integrated Security=True;",
+        "Swagger__BaseAddress": "https://localhost:7289"
       }
     }
   }
