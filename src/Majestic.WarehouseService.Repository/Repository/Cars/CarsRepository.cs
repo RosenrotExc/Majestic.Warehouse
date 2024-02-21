@@ -27,36 +27,41 @@ namespace Majestic.WarehouseService.Repository.Repository.Cars
             _initiatorRepository = initiatorRepository;
         }
 
-        public async Task<ServiceResult> CreateCarAsync(CarEntity entity, InitiatorServiceModel initiator)
+        public async Task<ServiceResult> CreateCarAsync(List<CarEntity> entities, InitiatorServiceModel initiator)
         {
             try
             {
-                _logger.LogInformation("{name} {@entity}", nameof(CreateCarAsync), entity);
-
-                var utcNow = DateTime.UtcNow;
-
-                #region Create Code
-                entity.Code = new CarEntityCode
-                {
-                    Value = Guid.NewGuid().ToString()
-                };
-                #endregion
-
-                #region Create State
                 var initiatorContext = await _initiatorRepository.CreateOrGetInitiatorAsync(initiator.SubjectId);
 
-                entity.AddState(
-                    State.Values.Inserted,
-                    initiatorContext.Value.Id,
-                    refId: Guid.NewGuid());
-                #endregion
+                foreach (var entity in entities)
+                {
+                    _logger.LogInformation("{name} {@entity}", nameof(CreateCarAsync), entity);
 
-                await _dbContext.AddAsync(entity);
+                    var utcNow = DateTime.UtcNow;
+
+                    #region Create Code
+                    entity.Code = new CarEntityCode
+                    {
+                        Value = Guid.NewGuid().ToString()
+                    };
+                    #endregion
+
+                    #region Create State
+                    entity.AddState(
+                        State.Values.Inserted,
+                        initiatorContext.Value.Id,
+                        utcNow,
+                        refId: Guid.NewGuid(),
+                        task: "CreateCar");
+                    #endregion
+                }
+
+                await _dbContext.AddRangeAsync(entities);
                 var affectedCount = await _dbContext.SaveChangesAsync();
                 if (affectedCount < 0)
                 {
                     const string Message = "Failed to create car";
-                    _logger.LogError("{Message} {@entity}", Message, entity);
+                    _logger.LogError("{Message} {@entity}", Message, entities);
                     return new ServiceResult(Message);
                 }
 
@@ -65,7 +70,143 @@ namespace Majestic.WarehouseService.Repository.Repository.Cars
             catch (Exception ex)
             {
                 const string Message = "Failed to create car";
-                _logger.LogError(ex, "{Message} {@entity}", Message, entity);
+                _logger.LogError(ex, "{Message} {@entity}", Message, entities);
+                return new ServiceResult(Message);
+            }
+        }
+
+        public async Task<ServiceResult> UpdateCarAsync(string code, CarEntity newEntity, InitiatorServiceModel initiator)
+        {
+            try
+            {
+                _logger.LogInformation("{name} {@entity}", nameof(UpdateCarAsync), newEntity);
+
+                var utcNow = DateTime.UtcNow;
+
+                var initiatorContext = await _initiatorRepository.CreateOrGetInitiatorAsync(initiator.SubjectId);
+
+                var contextModel = await _dbContext.Set<CarEntityCode>()
+                    .Join(_dbContext.Set<CarEntity>(),
+                        x => x.Id,
+                        entity => entity.CodeId,
+                        (x, entity) => new { EntityCode = x, Entity = entity })
+                    .Join(_dbContext.Set<CarEntityState>().WhereNotExpired(utcNow),
+                        x => x.Entity.Id,
+                        state => state.EntityId,
+                        (x, state) => new { x.EntityCode, x.Entity, EntityState = state })
+                    .Where(x => x.EntityCode.Value == code)
+                    .FirstOrDefaultAsync();
+
+                if (contextModel == null)
+                {
+                    const string Message = "Car not exists";
+                    _logger.LogWarning("{name} {message} {@entity}, {@code}", nameof(UpdateCarAsync), Message, newEntity, code);
+                    return new ServiceResult(Message);
+                }
+
+                var existedEntityState = contextModel.EntityState;
+                var existedEntity = contextModel.Entity;
+
+                #region Create State
+                newEntity.Code = existedEntity.Code;
+
+                existedEntityState.ExpireDateTime = utcNow;
+
+                newEntity.AddState(
+                    State.Values.Updated,
+                    initiatorContext.Value.Id,
+                    utcNow,
+                    refId: Guid.NewGuid(),
+                    eTag: Guid.NewGuid(),
+                    task: "UpdateCar");
+                #endregion
+
+                _dbContext.Update(existedEntity);
+                await _dbContext.AddAsync(newEntity);
+                var affectedCount = await _dbContext.SaveChangesAsync();
+                if (affectedCount < 0)
+                {
+                    const string Message = "Failed to update car";
+                    _logger.LogError("{Message} {@entity}", Message, newEntity);
+                    return new ServiceResult(Message);
+                }
+
+                return new ServiceResult(true);
+            }
+            catch (Exception ex)
+            {
+                const string Message = "Failed to update car";
+                _logger.LogError(ex, "{Message} {@entity}", Message, newEntity);
+                return new ServiceResult(Message);
+            }
+        }
+
+        public async Task<ServiceResult> DeleteCarAsync(string code, InitiatorServiceModel initiator)
+        {
+            try
+            {
+                _logger.LogInformation("{name}", nameof(DeleteCarAsync));
+
+                var utcNow = DateTime.UtcNow;
+
+                var initiatorContext = await _initiatorRepository.CreateOrGetInitiatorAsync(initiator.SubjectId);
+
+                var entityState = await _dbContext.Set<CarEntityCode>()
+                    .Join(_dbContext.Set<CarEntity>(),
+                        x => x.Id,
+                        entity => entity.CodeId,
+                        (x, entity) => new { EntityCode = x, Entity = entity })
+                    .Join(_dbContext.Set<CarEntityState>().WhereNotExpired(utcNow),
+                        x => x.Entity.Id,
+                        state => state.EntityId,
+                        (x, state) => new { x.EntityCode, x.Entity, EntityState = state })
+                    .Where(x => x.EntityCode.Value == code)
+                    .Select(x => x.EntityState)
+                    .FirstOrDefaultAsync();
+
+                if (entityState == null)
+                {
+                    const string Message = "Car not exists";
+                    _logger.LogWarning("{name} {message}, {@code}",  nameof(DeleteCarAsync), Message, code);
+                    return new ServiceResult
+                    {
+                        IsSuccess = true,
+                        Message = Message
+                    };
+                }
+
+                #region Create State
+                var newEntityState = new CarEntityState
+                {
+                    EntityId = entityState.EntityId,
+                    InitiatorId = initiatorContext.Value.Id,
+                    RefId = Guid.NewGuid(),
+                    ETag = Guid.NewGuid(),
+                    Task = "DeleteCar",
+                    StateId = (byte)State.Values.Deleted,
+                    CreateDateTime = utcNow,
+                    ExpireDateTime = utcNow,
+                };
+
+                entityState.ExpireDateTime = utcNow;
+                #endregion
+
+                await _dbContext.AddAsync(newEntityState);
+                _dbContext.Update(entityState);
+                var affectedCount = await _dbContext.SaveChangesAsync();
+                if (affectedCount < 0)
+                {
+                    const string Message = "Failed to delete car";
+                    _logger.LogError("{Message}", Message);
+                    return new ServiceResult(Message);
+                }
+
+                return new ServiceResult(true);
+            }
+            catch (Exception ex)
+            {
+                const string Message = "Failed to delete car";
+                _logger.LogError(ex, "{Message}", Message);
                 return new ServiceResult(Message);
             }
         }
@@ -117,16 +258,14 @@ namespace Majestic.WarehouseService.Repository.Repository.Cars
                 var utcNow = DateTime.UtcNow;
 
                 var query = _dbContext.Set<CarEntityCode>()
-                    .Join(_dbContext.Set<CarEntity>(),
+                    .Join(_dbContext.Set<CarEntity>().Include(x => x.Code),
                         x => x.Id,
                         entity => entity.CodeId,
                         (x, entity) => new { EntityCode = x, Entity = entity })
-                    .Join(_dbContext.Set<CarEntityState>(),
+                    .Join(_dbContext.Set<CarEntityState>().WhereNotExpired(utcNow),
                         x => x.Entity.Id,
                         state => state.EntityId,
-                        (x, state) => new { x.EntityCode, x.Entity, EntityState = state })
-                    .Where(x => x.EntityState.CreateDateTime <= utcNow)
-                    .Where(x => x.EntityState.ExpireDateTime == null || x.EntityState.ExpireDateTime > utcNow);
+                        (x, state) => new { x.EntityCode, x.Entity, EntityState = state });
                 #endregion
 
                 #region Filter
@@ -137,9 +276,7 @@ namespace Majestic.WarehouseService.Repository.Repository.Cars
 
                 if (!string.IsNullOrWhiteSpace(filter.SearchValue))
                 {
-                    var searchValue = filter.SearchValue.ToLower();
-                    query = query.Where(
-                        x => x.Entity.ModelName.ToLower().Contains(searchValue) || x.Entity.CarName.ToString().Contains(searchValue));
+                    query = query.Where(x => x.Entity.ModelName.Contains(filter.SearchValue) || x.Entity.CarName.Contains(filter.SearchValue));
                 }
 
                 if (!string.IsNullOrWhiteSpace(filter.OwnerName))

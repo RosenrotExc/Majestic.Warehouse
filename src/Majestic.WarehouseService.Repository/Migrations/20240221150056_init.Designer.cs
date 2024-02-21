@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Majestic.WarehouseService.Repository.Migrations
 {
     [DbContext(typeof(WarehouseDbContext))]
-    [Migration("20240220181504_initial")]
-    partial class initial
+    [Migration("20240221150056_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -151,7 +151,10 @@ namespace Majestic.WarehouseService.Repository.Migrations
             modelBuilder.Entity("Majestic.WarehouseService.Repository.Models.Internal.Initiator", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Value")
                         .IsRequired()
@@ -170,7 +173,10 @@ namespace Majestic.WarehouseService.Repository.Migrations
             modelBuilder.Entity("Majestic.WarehouseService.Repository.Models.Internal.State", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Value")
                         .IsRequired()

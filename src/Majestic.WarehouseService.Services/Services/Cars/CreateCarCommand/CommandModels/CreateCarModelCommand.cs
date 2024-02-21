@@ -5,10 +5,10 @@ namespace Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand.Comm
 {
     public class CreateCarModelCommand
     {
-        public CreateCarRequest Request { get; }
+        public CreateCarsRequest Request { get; }
         public Initiator Initiator { get; }
 
-        public CreateCarModelCommand(CreateCarRequest request, Initiator initiator)
+        public CreateCarModelCommand(CreateCarsRequest request, Initiator initiator)
         {
             Request = request;
             Initiator = initiator;

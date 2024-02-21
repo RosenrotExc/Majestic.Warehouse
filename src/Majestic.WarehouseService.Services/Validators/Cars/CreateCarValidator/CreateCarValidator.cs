@@ -5,6 +5,29 @@ namespace Majestic.WarehouseService.Services.Validators.Cars.CreateCarValidator
 {
     public class CreateCarValidator : ICreateCarValidator
     {
+        public ServiceResult Validate(IEnumerable<CreateCarRequest> requests)
+        {
+            var result = new ServiceResult();
+            foreach (var request in requests)
+            {
+                var validateResult = Validate(request);
+                if (!validateResult.IsSuccess)
+                {
+                    var key = $"{validateResult.Message}-{Guid.NewGuid()}";
+                    var value = validateResult.Data.Select(x => $"{x.Key}-{string.Join("; ", x.Value)}").ToList();
+
+                    result.Data.Add(key, value);
+                }
+            }
+
+            if (result.Data?.Any() == true)
+            {
+                return result;
+            }
+
+            return new ServiceResult(true);
+        }
+
         public ServiceResult Validate(CreateCarRequest request)
         {
             var errors = new Dictionary<string, IList<string>>();
@@ -61,7 +84,7 @@ namespace Majestic.WarehouseService.Services.Validators.Cars.CreateCarValidator
             {
                 return new ServiceResult
                 {
-                    Message = "Some fields was invalid",
+                    Message = $"Some fields was invalid for {request.CarName}-{request.OwnerName}-{request.DealersPrice}",
                     Data = errors
                 };
             }

@@ -30,7 +30,7 @@ namespace Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand
         {
             _logger.LogInformation("{name} {@command}", nameof(CreateCarCommandService), command);
 
-            var validationResult = _createCarValidator.Validate(command.Request);
+            var validationResult = _createCarValidator.Validate(command.Request.Requests);
             if (!validationResult.IsSuccess)
             {
                 _logger.LogError("{name} Validation failed {@validationResult} {@command}", nameof(CreateCarCommandService),
@@ -38,9 +38,9 @@ namespace Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand
                 return CreateCarFlowResult.ValidationError();
             }
 
-            var mappedModel = _createCarMapper.MapCarRequestToCarEntity(command.Request);
+            var mappedModels = command.Request.Requests.Select(x => _createCarMapper.MapCarRequestToCarEntity(x)).ToList();
 
-            var result = await _carsRepository.CreateCarAsync(mappedModel, command.Initiator);
+            var result = await _carsRepository.CreateCarAsync(mappedModels, command.Initiator);
             if (!result.IsSuccess)
             {
                 _logger.LogError("{name} Failed to create car {@command}", nameof(CreateCarCommandService),

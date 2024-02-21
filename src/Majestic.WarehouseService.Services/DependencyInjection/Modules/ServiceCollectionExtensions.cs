@@ -1,7 +1,9 @@
 ﻿using Majestic.WarehouseService.Services.Mappers.Cars;
 using Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand;
+using Majestic.WarehouseService.Services.Services.Cars.DeleteCarCommand;
 using Majestic.WarehouseService.Services.Services.Cars.GetCarQuery;
 using Majestic.WarehouseService.Services.Services.Cars.ProcessSellCarCommand;
+using Majestic.WarehouseService.Services.Services.Cars.UpdateCarCommand;
 using Majestic.WarehouseService.Services.Validators.Cars.CreateCarValidator;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +15,8 @@ namespace Majestic.WarehouseService.Services.DependencyInjection.Modules
         {
             return services
                 .AddTransient<ICreateCarCommandService, CreateCarCommandService>()
+                .AddTransient<IUpdateCarCommandService, UpdateCarCommandService>()
+                .AddTransient<IDeleteCarCommandService, DeleteCarCommandService>()
                 .AddTransient<IGetCarQueryService, GetCarQueryService>()
                 .AddTransient<IProcessSellCarCommandService, ProcessSellCarCommandService>();
         }

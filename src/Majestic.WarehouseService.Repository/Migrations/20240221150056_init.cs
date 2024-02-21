@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Majestic.WarehouseService.Repository.Migrations
 {
-    public partial class initial : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,7 +25,8 @@ namespace Majestic.WarehouseService.Repository.Migrations
                 name: "Initiator",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Value = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
@@ -38,7 +38,8 @@ namespace Majestic.WarehouseService.Repository.Migrations
                 name: "State",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Value = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
@@ -165,6 +166,18 @@ namespace Majestic.WarehouseService.Repository.Migrations
                 table: "State",
                 column: "Value",
                 unique: true);
+
+            #region Populate states
+            {
+                var sqlScript = "";
+                foreach (Models.Internal.State.Values value in Enum.GetValues(typeof(Models.Internal.State.Values)))
+                {
+                    sqlScript += $"INSERT INTO dbo.State (Value) VALUES ('{value}');\n";
+                }
+
+                migrationBuilder.Sql(sqlScript);
+            }
+            #endregion
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

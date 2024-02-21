@@ -5,6 +5,7 @@ namespace Majestic.WarehouseService.Services.Validators.Cars.CreateCarValidator
 {
     public interface ICreateCarValidator
     {
+        ServiceResult Validate(IEnumerable<CreateCarRequest> requests);
         ServiceResult Validate(CreateCarRequest request);
     }
 }
