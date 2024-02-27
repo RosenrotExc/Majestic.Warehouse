@@ -1,10 +1,12 @@
 ﻿using Majestic.WarehouseService.Models.v1.CreateCars.Request;
 using Majestic.WarehouseService.Models.v1.GetCars.Response;
+using Majestic.WarehouseService.Models.v1.ProcessCarSell.Event;
+using Majestic.WarehouseService.Models.v1.ProcessSellCar.Request;
 using Majestic.WarehouseService.Repository.Models.Cars;
 
 namespace Majestic.WarehouseService.Services.Mappers.Cars
 {
-    public class CreateCarMapper : ICreateCarMapper
+    public class CarMapper : ICarMapper
     {
         public CarEntity MapCarRequestToCarEntity(CreateCarRequest request)
         {
@@ -30,6 +32,17 @@ namespace Majestic.WarehouseService.Services.Mappers.Cars
                 DealersPrice = entity.DealersPrice,
                 OwnersPrice = entity.OwnersPrice,
                 DealerNotes = entity.DealerNotes
+            };
+        }
+
+        public ProcessSellCarEvent MapProcessSellCarRequestToEvent(ProcessSellCarRequest request, string requestId)
+        {
+            return new ProcessSellCarEvent
+            {
+                RequestId = requestId,
+                Code = request.Code,
+                Amount = request.Amount,
+                NewOwnerName = request.NewOwnerName
             };
         }
     }

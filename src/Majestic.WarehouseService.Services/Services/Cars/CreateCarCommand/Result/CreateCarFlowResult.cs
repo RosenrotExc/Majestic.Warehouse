@@ -1,4 +1,5 @@
-﻿using Majestic.WarehouseService.Models.Misc;
+﻿using System.ComponentModel.DataAnnotations;
+using Majestic.WarehouseService.Models.Misc;
 
 namespace Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand.Result
 {
@@ -28,9 +29,9 @@ namespace Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand.Resu
             return new CreateCarFlowResult(false, null, Reasons.UnexpectedError);
         }
 
-        public static CreateCarFlowResult ValidationError()
+        public static CreateCarFlowResult ValidationError(ServiceResult result)
         {
-            return new CreateCarFlowResult(false, null, Reasons.ValidationError);
+            return new CreateCarFlowResult(false, result, Reasons.ValidationError);
         }
 
         public static CreateCarFlowResult Success(ServiceResult result)

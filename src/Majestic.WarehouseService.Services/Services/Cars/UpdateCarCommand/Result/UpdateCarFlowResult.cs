@@ -28,9 +28,9 @@ namespace Majestic.WarehouseService.Services.Services.Cars.UpdateCarCommand.Resu
             return new UpdateCarFlowResult(false, null, Reasons.UnexpectedError);
         }
 
-        public static UpdateCarFlowResult ValidationError()
+        public static UpdateCarFlowResult ValidationError(ServiceResult result)
         {
-            return new UpdateCarFlowResult(false, null, Reasons.ValidationError);
+            return new UpdateCarFlowResult(false, result, Reasons.ValidationError);
         }
 
         public static UpdateCarFlowResult Success(ServiceResult result)

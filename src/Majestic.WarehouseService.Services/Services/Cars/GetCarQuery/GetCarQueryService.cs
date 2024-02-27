@@ -13,12 +13,12 @@ namespace Majestic.WarehouseService.Services.Services.Cars.GetCarQuery
     {
         private readonly ILogger<GetCarQueryService> _logger;
         private readonly ICarsRepository _carsRepository;
-        private readonly ICreateCarMapper _createCarMapper;
+        private readonly ICarMapper _createCarMapper;
 
         public GetCarQueryService(
             ILogger<GetCarQueryService> logger, 
             ICarsRepository carsRepository,
-            ICreateCarMapper createCarMapper)
+            ICarMapper createCarMapper)
         {
             _logger = logger;
             _carsRepository = carsRepository;

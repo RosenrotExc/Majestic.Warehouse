@@ -6,7 +6,8 @@ namespace Majestic.WarehouseService.Services.Services.Cars.ProcessSellCarCommand
     {
         public enum Reasons
         {
-            UnexpectedError
+            UnexpectedError,
+            ValidationResult
         }
 
         public bool Successful { get; }
@@ -23,6 +24,11 @@ namespace Majestic.WarehouseService.Services.Services.Cars.ProcessSellCarCommand
         }
 
         public static ProcessCarFlowResult UnexpectedError()
+        {
+            return new ProcessCarFlowResult(false, null, Reasons.UnexpectedError);
+        }
+
+        public static ProcessCarFlowResult ValidationError()
         {
             return new ProcessCarFlowResult(false, null, Reasons.UnexpectedError);
         }

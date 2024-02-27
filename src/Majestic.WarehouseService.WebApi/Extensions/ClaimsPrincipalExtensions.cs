@@ -32,5 +32,10 @@ namespace Majestic.WarehouseService.WebApi.Extensions
         {
             return principal.Claims.SingleOrDefault(claim => claim.Type == "sub")?.Value;
         }
+
+        public static string GetRequestId(this HttpContext httpContext)
+        {
+            return httpContext.Request.Headers["X-Request-ID"];
+        }
     }
 }

@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  warehouse-webapi:
+    build:
+      context: .
+      dockerfile: src/Majestic.WarehouseService.WebApi/Dockerfile
+    ports:
+      - "5000:80"
+    depends_on:
+      - rabbitmq
+
+  warehouse-hostedservice:
+    build:
+      context: .
+      dockerfile: src/Majestic.WarehouseService.HostedService/Dockerfile
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: "rabbitmq:3.8.14-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"

@@ -12,13 +12,13 @@ namespace Majestic.WarehouseService.Services.Services.Cars.DeleteCarCommand
         private readonly ILogger<DeleteCarCommandService> _logger;
         private readonly ICarsRepository _carsRepository;
         private readonly ICreateCarValidator _createCarValidator;
-        private readonly ICreateCarMapper _createCarMapper;
+        private readonly ICarMapper _createCarMapper;
 
         public DeleteCarCommandService(
             ILogger<DeleteCarCommandService> logger,
             ICarsRepository carsRepository,
             ICreateCarValidator createCarValidator,
-            ICreateCarMapper createCarMapper)
+            ICarMapper createCarMapper)
         {
             _logger = logger;
             _carsRepository = carsRepository;

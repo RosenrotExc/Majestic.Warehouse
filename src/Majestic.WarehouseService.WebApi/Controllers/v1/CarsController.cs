@@ -54,7 +54,7 @@ namespace Majestic.WarehouseService.WebApi.Controllers.v1
                 case CreateCarFlowResult.Reasons.UnexpectedError:
                     return BadRequest(new ServiceResult("Failed to process car creation"));
                 case CreateCarFlowResult.Reasons.ValidationError:
-                    return BadRequest(new ServiceResult("Validation failed for car creation"));
+                    return BadRequest(result);
                 default:
                     return StatusCode((int)HttpStatusCode.InternalServerError);
             }
@@ -85,7 +85,7 @@ namespace Majestic.WarehouseService.WebApi.Controllers.v1
                 case UpdateCarFlowResult.Reasons.UnexpectedError:
                     return BadRequest(new ServiceResult("Failed to process car update"));
                 case UpdateCarFlowResult.Reasons.ValidationError:
-                    return BadRequest(new ServiceResult("Validation failed for car update"));
+                    return BadRequest(result);
                 default:
                     return StatusCode((int)HttpStatusCode.InternalServerError);
             }
@@ -164,8 +164,7 @@ namespace Majestic.WarehouseService.WebApi.Controllers.v1
         {
             var initiator = User.GetStubInitiator();
 
-            var result = await command.HandleAsync(new ProcessSellCarModelCommand(request, initiator));
-
+            var result = await command.HandleAsync(new ProcessSellCarModelCommand(request, initiator, HttpContext.GetRequestId()));
             if (result.Successful)
             {
                 return Accepted(result.Result);

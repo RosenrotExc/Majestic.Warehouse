@@ -27,6 +27,7 @@ namespace Majestic.WarehouseService.WebApi
             services.AddValidators();
             services.AddRepositories();
             services.AddDbContext(_configuration);
+            services.AddRabbitMqProducer();
             #endregion
 
             services.AddControllers()

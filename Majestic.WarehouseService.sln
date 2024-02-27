@@ -15,7 +15,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majestic.WarehouseService.R
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majestic.WarehouseService.HostedService", "src\Majestic.WarehouseService.HostedService\Majestic.WarehouseService.HostedService.csproj", "{98C21DC9-D870-4410-A2A8-88AA260B0081}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Majestic.WarehouseService.Models", "src\Majestic.WarehouseService.Models\Majestic.WarehouseService.Models.csproj", "{4BAE6433-D18E-4408-A437-CCB83458E115}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majestic.WarehouseService.Models", "src\Majestic.WarehouseService.Models\Majestic.WarehouseService.Models.csproj", "{4BAE6433-D18E-4408-A437-CCB83458E115}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{617E4D32-AEAB-4CCA-B755-5913BDF3EBD8}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

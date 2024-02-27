@@ -1,5 +1,6 @@
 ﻿using Majestic.WarehouseService.Models.Misc;
 using Majestic.WarehouseService.Models.v1.CreateCars.Request;
+using Majestic.WarehouseService.Models.v1.ProcessCarSell.Event;
 
 namespace Majestic.WarehouseService.Services.Validators.Cars.CreateCarValidator
 {
@@ -85,6 +86,38 @@ namespace Majestic.WarehouseService.Services.Validators.Cars.CreateCarValidator
                 return new ServiceResult
                 {
                     Message = $"Some fields was invalid for {request.CarName}-{request.OwnerName}-{request.DealersPrice}",
+                    Data = errors
+                };
+            }
+
+            return new ServiceResult(true);
+        }
+
+        public ServiceResult Validate(ProcessSellCarEvent request)
+        {
+            var errors = new Dictionary<string, IList<string>>();
+
+            #region ValidateNewOwnerName
+            var ownerNameErrors = ValidateOwnerName(request.NewOwnerName);
+            if (ownerNameErrors != null)
+            {
+                errors.Add("NewOwnerName", ownerNameErrors);
+            }
+            #endregion
+
+            #region ValidateSellPrice
+            var dealersPriceErrors = ValidateSellPrice(request.Amount);
+            if (dealersPriceErrors != null)
+            {
+                errors.Add("Amount", dealersPriceErrors);
+            }
+            #endregion
+
+            if (errors.Any())
+            {
+                return new ServiceResult
+                {
+                    Message = $"Some fields was invalid",
                     Data = errors
                 };
             }
@@ -223,6 +256,28 @@ namespace Majestic.WarehouseService.Services.Validators.Cars.CreateCarValidator
             if (dealerNotes.Length > MaxDealersNotesLength)
             {
                 errors.Add($"Dealer's notes cannot be more than 1000 {MaxDealersNotesLength}");
+                return errors;
+            }
+
+            return null;
+        }
+        #endregion
+
+        #region ValidateSellPrice
+        private List<string> ValidateSellPrice(decimal sellPrice)
+        {
+            var errors = new List<string>();
+
+            if (sellPrice <= 0)
+            {
+                errors.Add("Sell price cannot be negative");
+                return errors;
+            }
+
+            const int MaxPrice = 1_000_000;
+            if (sellPrice > MaxPrice)
+            {
+                errors.Add($"Sell's rice cannot be more than {MaxPrice}");
                 return errors;
             }
 

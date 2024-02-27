@@ -12,13 +12,13 @@ namespace Majestic.WarehouseService.Services.Services.Cars.UpdateCarCommand
         private readonly ILogger<UpdateCarCommandService> _logger;
         private readonly ICarsRepository _carsRepository;
         private readonly ICreateCarValidator _createCarValidator;
-        private readonly ICreateCarMapper _createCarMapper;
+        private readonly ICarMapper _createCarMapper;
 
         public UpdateCarCommandService(
             ILogger<UpdateCarCommandService> logger,
             ICarsRepository carsRepository,
             ICreateCarValidator createCarValidator,
-            ICreateCarMapper createCarMapper)
+            ICarMapper createCarMapper)
         {
             _logger = logger;
             _carsRepository = carsRepository;
@@ -35,7 +35,7 @@ namespace Majestic.WarehouseService.Services.Services.Cars.UpdateCarCommand
             {
                 _logger.LogError("{name} Validation failed {@validationResult} {@command}", nameof(UpdateCarCommandService),
                     validationResult, command);
-                return UpdateCarFlowResult.ValidationError();
+                return UpdateCarFlowResult.ValidationError(validationResult);
             }
 
             var mappedModel = _createCarMapper.MapCarRequestToCarEntity(command.Request);

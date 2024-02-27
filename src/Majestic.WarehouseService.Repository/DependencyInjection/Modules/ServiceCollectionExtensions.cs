@@ -11,7 +11,7 @@ namespace Majestic.WarehouseService.Repository.DependencyInjection.Modules
     {
         public static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
-            return services.AddDbContext<WarehouseDbContext>(options =>  options.UseSqlServer(configuration.GetConnectionString("Db")));
+            return services.AddDbContext<WarehouseDbContext>(options =>  options.UseSqlServer(configuration.GetConnectionString("Db")), ServiceLifetime.Scoped);
         }
 
         public static IServiceCollection AddRepositories(this IServiceCollection services)
