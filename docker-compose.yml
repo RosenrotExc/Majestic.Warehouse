@@ -9,6 +9,9 @@ services:
       - "5000:80"
     depends_on:
       - rabbitmq
+      - redis
+      - sql_server
+    network_mode: "host"
 
   warehouse-hostedservice:
     build:
@@ -16,9 +19,32 @@ services:
       dockerfile: src/Majestic.WarehouseService.HostedService/Dockerfile
     depends_on:
       - rabbitmq
+      - redis
+      - sql_server
+    network_mode: "host"
+
+  sql_server:
+    image: "mcr.microsoft.com/mssql/server"
+    user: root
+    environment:
+      SA_PASSWORD: "YourPassword123!"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql/data
 
   rabbitmq:
     image: "rabbitmq:3.8.14-management"
     ports:
       - "5672:5672"
       - "15672:15672"
+
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+
+volumes:
+  sql_data:
+    driver: local

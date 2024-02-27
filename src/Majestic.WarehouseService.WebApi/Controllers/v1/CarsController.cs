@@ -3,6 +3,7 @@ using Majestic.WarehouseService.Models.Misc;
 using Majestic.WarehouseService.Models.v1.CreateCars.Request;
 using Majestic.WarehouseService.Models.v1.GetCars.Request;
 using Majestic.WarehouseService.Models.v1.GetCars.Response;
+using Majestic.WarehouseService.Models.v1.GetCarsMetrics.Response;
 using Majestic.WarehouseService.Models.v1.ProcessSellCar.Request;
 using Majestic.WarehouseService.Models.v1.UpdateCars.Request;
 using Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand;
@@ -14,6 +15,9 @@ using Majestic.WarehouseService.Services.Services.Cars.DeleteCarCommand.Result;
 using Majestic.WarehouseService.Services.Services.Cars.GetCarQuery;
 using Majestic.WarehouseService.Services.Services.Cars.GetCarQuery.QueryModels;
 using Majestic.WarehouseService.Services.Services.Cars.GetCarQuery.Result;
+using Majestic.WarehouseService.Services.Services.Cars.GetCarsMetrics;
+using Majestic.WarehouseService.Services.Services.Cars.GetCarsMetrics.QueryModels;
+using Majestic.WarehouseService.Services.Services.Cars.GetCarsMetrics.Result;
 using Majestic.WarehouseService.Services.Services.Cars.ProcessSellCarCommand;
 using Majestic.WarehouseService.Services.Services.Cars.ProcessSellCarCommand.CommandModels;
 using Majestic.WarehouseService.Services.Services.Cars.ProcessSellCarCommand.Result;
@@ -174,6 +178,34 @@ namespace Majestic.WarehouseService.WebApi.Controllers.v1
             {
                 case ProcessCarFlowResult.Reasons.UnexpectedError:
                     return BadRequest(new ServiceResult("Failed to process car sell"));
+                default:
+                    return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+        #endregion
+
+        #region Get cars metrics
+        [HttpGet("metrics", Name = "GetCarsMetrics")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ServiceResultWrapper<GetCarsMetricsResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ServiceResult), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        [SwaggerOperation(Summary = "Get metrics", Description = "Get cars metrics", Tags = new[] { "Cars" })]
+        public async Task<IActionResult> GetCarsMetricsAsync([FromServices] IGetCarsMetricsQueryService command)
+        {
+            var initiator = User.GetStubInitiator();
+            
+            var result = await command.HandleAsync(new GetCarsMetricsModelQuery(initiator));
+            if (result.Successful)
+            {
+                return Ok(result.Result);
+            }
+
+            switch (result.Reason)
+            {
+                case GetCarsMetricsFlowResult.Reasons.FailedToGetCarsMetrics:
+                case GetCarsMetricsFlowResult.Reasons.UnexpectedError:
+                    return BadRequest(new ServiceResult("Failed to get cars metrics"));
                 default:
                     return StatusCode((int)HttpStatusCode.InternalServerError);
             }

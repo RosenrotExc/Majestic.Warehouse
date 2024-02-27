@@ -1,5 +1,6 @@
 ﻿using Majestic.WarehouseService.Models.Misc;
 using Majestic.WarehouseService.Models.v1.GetCars.Request;
+using Majestic.WarehouseService.Models.v1.GetCarsMetrics.Response;
 using Majestic.WarehouseService.Repository.Contexts;
 using Majestic.WarehouseService.Repository.Extensions;
 using Majestic.WarehouseService.Repository.Models.Cars;
@@ -476,6 +477,45 @@ namespace Majestic.WarehouseService.Repository.Repository.Cars
                 {
                     Message = Message
                 };
+            }
+        }
+
+        public async Task<ServiceResultWrapper<GetCarsMetricsResponse>> QueryMetricsAsync()
+        {
+            try
+            {
+                _logger.LogInformation("{name}", nameof(QueryMetricsAsync));
+
+                #region Query
+                var utcNow = DateTime.UtcNow;
+
+                var query = _dbContext.Set<CarEntityCode>()
+                    .Join(_dbContext.Set<CarEntity>().Include(x => x.Code),
+                        x => x.Id,
+                        entity => entity.CodeId,
+                        (x, entity) => new { EntityCode = x, Entity = entity })
+                    .Join(_dbContext.Set<CarEntityState>().WhereNotExpired(utcNow),
+                        x => x.Entity.Id,
+                        state => state.EntityId,
+                        (x, state) => new { x.EntityCode, x.Entity, EntityState = state });
+                #endregion
+
+                var totalCars = await query.CountAsync();
+                var totalPricing = await query.SumAsync(x => x.Entity.DealersPrice);
+
+                var result = new GetCarsMetricsResponse
+                {
+                    TotalCars = totalCars,
+                    TotalPricing = totalPricing
+                };
+
+                return new ServiceResultWrapper<GetCarsMetricsResponse>(result);
+            }
+            catch (Exception ex)
+            {
+                const string Message = "Failed to get metrics";
+                _logger.LogError(ex, "{Message}", Message);
+                return new ServiceResultWrapper<GetCarsMetricsResponse>(Message);
             }
         }
     }

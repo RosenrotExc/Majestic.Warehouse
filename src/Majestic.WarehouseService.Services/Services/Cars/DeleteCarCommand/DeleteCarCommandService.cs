@@ -1,8 +1,11 @@
-﻿using Majestic.WarehouseService.Repository.Repository.Cars;
+﻿using System.Reflection.Metadata;
+using Majestic.WarehouseService.Models.Misc;
+using Majestic.WarehouseService.Repository.Repository.Cars;
 using Majestic.WarehouseService.Services.Mappers.Cars;
 using Majestic.WarehouseService.Services.Services.Cars.DeleteCarCommand.CommandModels;
 using Majestic.WarehouseService.Services.Services.Cars.DeleteCarCommand.Result;
 using Majestic.WarehouseService.Services.Validators.Cars.CreateCarValidator;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
 namespace Majestic.WarehouseService.Services.Services.Cars.DeleteCarCommand
@@ -13,17 +16,20 @@ namespace Majestic.WarehouseService.Services.Services.Cars.DeleteCarCommand
         private readonly ICarsRepository _carsRepository;
         private readonly ICreateCarValidator _createCarValidator;
         private readonly ICarMapper _createCarMapper;
+        private readonly IDistributedCache _cache;
 
         public DeleteCarCommandService(
             ILogger<DeleteCarCommandService> logger,
             ICarsRepository carsRepository,
             ICreateCarValidator createCarValidator,
-            ICarMapper createCarMapper)
+            ICarMapper createCarMapper,
+            IDistributedCache cache)
         {
             _logger = logger;
             _carsRepository = carsRepository;
             _createCarValidator = createCarValidator;
             _createCarMapper = createCarMapper;
+            _cache = cache;
         }
 
         public async Task<DeleteCarFlowResult> HandleAsync(DeleteCarModelCommand command)
@@ -37,6 +43,8 @@ namespace Majestic.WarehouseService.Services.Services.Cars.DeleteCarCommand
                     command);
                 return DeleteCarFlowResult.UnexpectedError();
             }
+
+            await _cache.RemoveAsync(Constants.RedisContants.CarsMetricsKey);
 
             return DeleteCarFlowResult.Success(result);
         }

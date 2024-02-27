@@ -7,6 +7,7 @@ using Majestic.WarehouseService.Services.RabbitMq.Publisher;
 using Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand;
 using Majestic.WarehouseService.Services.Services.Cars.DeleteCarCommand;
 using Majestic.WarehouseService.Services.Services.Cars.GetCarQuery;
+using Majestic.WarehouseService.Services.Services.Cars.GetCarsMetrics;
 using Majestic.WarehouseService.Services.Services.Cars.ProcessSellCarCommand;
 using Majestic.WarehouseService.Services.Services.Cars.ProcessSellCarHandler;
 using Majestic.WarehouseService.Services.Services.Cars.UpdateCarCommand;
@@ -26,6 +27,7 @@ namespace Majestic.WarehouseService.Services.DependencyInjection.Modules
                 .AddTransient<IUpdateCarCommandService, UpdateCarCommandService>()
                 .AddTransient<IDeleteCarCommandService, DeleteCarCommandService>()
                 .AddTransient<IGetCarQueryService, GetCarQueryService>()
+                .AddTransient<IGetCarsMetricsQueryService, GetCarsMetricsQueryService>()
                 .AddTransient<IProcessSellCarCommandService, ProcessSellCarCommandService>();
         }
 
@@ -51,6 +53,7 @@ namespace Majestic.WarehouseService.Services.DependencyInjection.Modules
             services.AddTransient<IConnectionProvider, RabbitMqConnectionProvider>(); 
             services.AddTransient<IMessageConsumer, RabbitMqMessageConsumer>();
             services.AddHostedService<Worker>();
+
             services.AddTransient<IProcessSellCardHandler, ProcessSellCardHandler>();
 
             var hostName = configuration["RabbitMQ:HostName"];
@@ -64,6 +67,17 @@ namespace Majestic.WarehouseService.Services.DependencyInjection.Modules
                 channel.QueueBind(queue: RabbitMq.Constants.ProcessSellCarQueueName, exchange: RabbitMq.Constants.ProcessSellCarExchangeName, routingKey: "");
                 #endregion
             }
+
+            return services;
+        }
+
+        public static IServiceCollection AddRedisCache(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration["Redis:Configuration"];
+                options.InstanceName = configuration["Redis:InstanceName"];
+            });
 
             return services;
         }
