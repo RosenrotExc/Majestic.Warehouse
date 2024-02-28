@@ -6,10 +6,10 @@
         "environmentVariables": {
             "ASPNETCORE_ENVIRONMENT": "Development",
             // "ConnectionStrings__Db": "Server=DESKTOP-R7TULMF\\SQLEXPRESS;Database=Majestic.Warehouse;Integrated Security=True;",
-            "ConnectionStrings__Db": "Server=localhost,1433;Database=warehouse1;User Id=sa;Password=YourPassword123!;",
-            "Redis__Configuration": "localhost:6379",
+            "ConnectionStrings__Db": "Server=sql_server,1433;Database=warehouse1;User Id=sa;Password=YourPassword123!;",
+            "Redis__Configuration": "redis:6379",
             "Redis__InstanceName": "WarehouseCache",
-            "Swagger__BaseAddress": "https://localhost:7289"
+            // "Swagger__BaseAddress": "https://localhost:7289"
         }
     }
   }

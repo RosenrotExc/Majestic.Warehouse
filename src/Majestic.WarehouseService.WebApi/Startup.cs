@@ -41,7 +41,7 @@ namespace Majestic.WarehouseService.WebApi
             {
                 so.SwaggerDoc("v1", new OpenApiInfo { Title = ServiceName, Version = "v1" });
 
-                var swaggerBaseAddress = _configuration.GetSection("Swagger").GetValue<string>("BaseAddress");
+                var swaggerBaseAddress = _configuration["ASPNETCORE_URLS"];
                 if (!string.IsNullOrEmpty(swaggerBaseAddress))
                 {
                     so.AddServer(new OpenApiServer { Url = swaggerBaseAddress });
