@@ -41,6 +41,7 @@ namespace Majestic.WarehouseService.HostedService
                     services.AddRepositories();
                     services.AddDbContext(hostContext.Configuration);
                     services.AddRabbitMqConsumer(hostContext.Configuration);
+                    services.AddRedisCache(hostContext.Configuration);
                 })
                 .UseSerilog();
     }
