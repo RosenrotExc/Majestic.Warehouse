@@ -41,8 +41,8 @@ The use of the CQRS pattern enhances flexibility and maintainability, allowing f
 2. **Build and run the microservice:**
 
    ```bash
-    dotnet build
-    dotnet run
+    docker-compose -f docker-compose.yml build --no-cache
+    docker-compose -f docker-compose.yml up
 
 ## Dependencies
 
