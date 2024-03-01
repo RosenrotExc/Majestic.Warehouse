@@ -35,7 +35,13 @@ namespace Majestic.WarehouseService.WebApi.Extensions
 
         public static string GetRequestId(this HttpContext httpContext)
         {
-            return httpContext.Request.Headers["X-Request-ID"];
+            var requestId = httpContext.Request.Headers["X-Request-ID"].ToString();
+            if (string.IsNullOrEmpty(requestId))
+            {
+                return Guid.NewGuid().ToString();
+            }
+
+            return requestId;
         }
     }
 }

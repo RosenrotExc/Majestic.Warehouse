@@ -61,9 +61,17 @@ namespace Majestic.WarehouseService.Services.DependencyInjection.Modules
             using (var channel = connection.CreateModel())
             {
                 #region ProcessSellCar
-                channel.QueueDeclare(queue: RabbitMq.Constants.ProcessSellCarQueueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
-                channel.ExchangeDeclare(exchange: RabbitMq.Constants.ProcessSellCarExchangeName, type: ExchangeType.Direct, durable: false, autoDelete: false, arguments: null);
-                channel.QueueBind(queue: RabbitMq.Constants.ProcessSellCarQueueName, exchange: RabbitMq.Constants.ProcessSellCarExchangeName, routingKey: "");
+                channel.QueueDeclare(RabbitMq.Constants.ProcessSellCarQueueName, false, false, false, null);
+                channel.ExchangeDeclare(RabbitMq.Constants.ProcessSellCarExchangeName, ExchangeType.Direct, false, false, null);
+                channel.QueueBind(RabbitMq.Constants.ProcessSellCarQueueName, RabbitMq.Constants.ProcessSellCarExchangeName, "");
+
+                channel.QueueDeclare(RabbitMq.Constants.ProcessSellCarDeadLetterQueueName, true, false, false);
+                var exchangeArgs = new Dictionary<string, object>
+                {
+                    { "x-delayed-type", "direct" }
+                };
+                channel.ExchangeDeclare(RabbitMq.Constants.ProcessSellCarDeadLetterExchangeName, RabbitMq.Constants.SystemExchangeTypeXDelayedMessage, true, false, exchangeArgs);
+                channel.QueueBind(RabbitMq.Constants.ProcessSellCarDeadLetterQueueName, RabbitMq.Constants.ProcessSellCarDeadLetterExchangeName, "");
                 #endregion
             }
 
