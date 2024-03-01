@@ -1,5 +1,4 @@
 ﻿using Majestic.WarehouseService.Models.Misc;
-using Majestic.WarehouseService.Models.v1.CreateCars.Request;
 using Majestic.WarehouseService.Models.v1.UpdateCars.Request;
 
 namespace Majestic.WarehouseService.Services.Services.Cars.UpdateCarCommand.CommandModels

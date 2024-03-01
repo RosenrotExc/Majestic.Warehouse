@@ -44,7 +44,7 @@ namespace Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand
                 return CreateCarFlowResult.ValidationError(validationResult);
             }
 
-            var mappedModels = command.Request.Requests.Select(x => _carMapper.MapCarRequestToCarEntity(x)).ToList();
+            var mappedModels = command.Request.Requests.Select(x => _carMapper.MapCreateCarRequestToCarEntity(x)).ToList();
 
             var result = await _carsRepository.CreateCarAsync(mappedModels, command.Initiator);
             if (!result.IsSuccess)

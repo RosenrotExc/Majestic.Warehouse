@@ -9,6 +9,7 @@ namespace Majestic.WarehouseService.Repository.Models.Cars
         public string OwnerName { get; set; }
         public decimal OwnersPrice { get; set; }
         public decimal DealersPrice { get; set; }
+        public decimal? SellFinalPrice { get; set; }
         public string DealerNotes { get; set; }
     }
 }

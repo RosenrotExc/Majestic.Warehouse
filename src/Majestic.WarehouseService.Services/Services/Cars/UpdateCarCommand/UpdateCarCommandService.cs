@@ -43,7 +43,7 @@ namespace Majestic.WarehouseService.Services.Services.Cars.UpdateCarCommand
                 return UpdateCarFlowResult.ValidationError(validationResult);
             }
 
-            var mappedModel = _carMapper.MapCarRequestToCarEntity(command.Request);
+            var mappedModel = _carMapper.MapUpdateCarRequestToCarEntity(command.Request);
 
             var result = await _carsRepository.UpdateCarAsync(command.Code, mappedModel, command.Initiator);
             if (!result.IsSuccess)

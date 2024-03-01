@@ -49,6 +49,18 @@ namespace Majestic.WarehouseService.Models.v1.GetCars.Request
         public decimal? DealersPriceTo { get; set; }
 
         /// <summary>
+        /// Search by sell final price
+        /// </summary>
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public decimal? SellFinalPriceFrom { get; set; }
+
+        /// <summary>
+        /// Search by sell final price
+        /// </summary>
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public decimal? SellFinalPriceTo { get; set; }
+
+        /// <summary>
         /// Search by dealers notes
         /// </summary>
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]

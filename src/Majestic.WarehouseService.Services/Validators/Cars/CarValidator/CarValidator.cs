@@ -1,6 +1,7 @@
 ﻿using Majestic.WarehouseService.Models.Misc;
 using Majestic.WarehouseService.Models.v1.CreateCars.Request;
 using Majestic.WarehouseService.Models.v1.ProcessCarSell.Event;
+using Majestic.WarehouseService.Models.v1.UpdateCars.Request;
 
 namespace Majestic.WarehouseService.Services.Validators.Cars.CreateCarValidator
 {
@@ -93,6 +94,78 @@ namespace Majestic.WarehouseService.Services.Validators.Cars.CreateCarValidator
             return new ServiceResult(true);
         }
 
+        public ServiceResult Validate(UpdateCarRequest request)
+        {
+            var errors = new Dictionary<string, IList<string>>();
+
+            #region ValidateCarName
+            var carNameErrors = ValidateCarName(request.CarName);
+            if (carNameErrors != null)
+            {
+                errors.Add("CarName", carNameErrors);
+            }
+            #endregion
+
+            #region ValidateModelName
+            var modelNameErrors = ValidateModelName(request.ModelName);
+            if (modelNameErrors != null)
+            {
+                errors.Add("ModelName", modelNameErrors);
+            }
+            #endregion
+
+            #region ValidateOwnerName
+            var ownerNameErrors = ValidateOwnerName(request.OwnerName);
+            if (ownerNameErrors != null)
+            {
+                errors.Add("OwnerName", ownerNameErrors);
+            }
+            #endregion
+
+            #region ValidateDealersPrice
+            var dealersPriceErrors = ValidateDealersPrice(request.DealersPrice, request.OwnersPrice);
+            if (dealersPriceErrors != null)
+            {
+                errors.Add("DealersPrice", dealersPriceErrors);
+            }
+            #endregion
+
+            #region ValidateOwnersPrice
+            var ownersPriceErrors = ValidateOwnersPrice(request.OwnersPrice);
+            if (ownersPriceErrors != null)
+            {
+                errors.Add("OwnersPrice", ownersPriceErrors);
+            }
+            #endregion
+
+            #region ValidateSellFinalPrice
+            var sellFinalPriceErrors = ValidateSellFinalPrice(request.SellFinalPrice);
+            if (sellFinalPriceErrors != null)
+            {
+                errors.Add("SellFinalPrice", sellFinalPriceErrors);
+            }
+            #endregion
+
+            #region ValidateDealerNote
+            var dealerNotesErrors = ValidateDealerNote(request.DealerNotes);
+            if (dealerNotesErrors != null)
+            {
+                errors.Add("DealerNotes", dealerNotesErrors);
+            }
+            #endregion
+
+            if (errors.Any())
+            {
+                return new ServiceResult
+                {
+                    Message = $"Some fields was invalid for {request.CarName}-{request.OwnerName}-{request.DealersPrice}",
+                    Data = errors
+                };
+            }
+
+            return new ServiceResult(true);
+        }
+
         public ServiceResult Validate(ProcessSellCarEvent request)
         {
             var errors = new Dictionary<string, IList<string>>();
@@ -106,10 +179,10 @@ namespace Majestic.WarehouseService.Services.Validators.Cars.CreateCarValidator
             #endregion
 
             #region ValidateSellPrice
-            var dealersPriceErrors = ValidateSellPrice(request.Amount);
-            if (dealersPriceErrors != null)
+            var sellFinalPriceErrors = ValidateSellPrice(request.Amount);
+            if (sellFinalPriceErrors != null)
             {
-                errors.Add("Amount", dealersPriceErrors);
+                errors.Add("Amount", sellFinalPriceErrors);
             }
             #endregion
 
@@ -234,6 +307,33 @@ namespace Majestic.WarehouseService.Services.Validators.Cars.CreateCarValidator
             if (ownerPrice > MaxPrice)
             {
                 errors.Add($"Owner's price cannot be more than {MaxPrice}");
+                return errors;
+            }
+
+            return null;
+        }
+        #endregion
+
+        #region ValidateSellFinalPrice
+        private List<string> ValidateSellFinalPrice(decimal? sellFinalPrice)
+        {
+            var errors = new List<string>();
+
+            if (sellFinalPrice == null)
+            {
+                return null;
+            }
+
+            if (sellFinalPrice <= 0)
+            {
+                errors.Add("Sell final price cannot be negative");
+                return errors;
+            }
+
+            const int MaxPrice = 1_000_000;
+            if (sellFinalPrice > MaxPrice)
+            {
+                errors.Add($"Sell final price cannot be more than {MaxPrice}");
                 return errors;
             }
 

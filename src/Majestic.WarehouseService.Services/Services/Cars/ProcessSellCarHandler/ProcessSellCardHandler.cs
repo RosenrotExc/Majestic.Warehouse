@@ -75,7 +75,8 @@ namespace Majestic.WarehouseService.Services.Services.Cars.ProcessSellCarHandler
                     OwnerName = request.NewOwnerName,
                     DealerNotes = existedCar.DealerNotes,
                     DealersPrice = existedCar.DealersPrice,
-                    OwnersPrice = existedCar.OwnersPrice
+                    OwnersPrice = existedCar.OwnersPrice,
+                    SellFinalPrice = request.Amount
                 };
                 var updateCommand = new UpdateCarModelCommand(request.Code, updateModel, initiator);
                 var updateResult = await _updateCarCommandService.HandleAsync(updateCommand);

@@ -32,6 +32,10 @@ namespace Majestic.WarehouseService.Repository.Configurations.Cars
                 .IsRequired();
 
             builder
+                .Property(b => b.SellFinalPrice)
+                .IsRequired(false);
+
+            builder
                 .Property(b => b.DealerNotes)
                 .IsRequired()
                 .HasMaxLength(1000);

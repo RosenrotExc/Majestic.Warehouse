@@ -306,6 +306,16 @@ namespace Majestic.WarehouseService.Repository.Repository.Cars
                     query = query.Where(x => filter.DealersPriceTo.Value >= x.Entity.DealersPrice);
                 }
 
+                if (filter.SellFinalPriceFrom.HasValue)
+                {
+                    query = query.Where(x => filter.SellFinalPriceFrom.Value <= x.Entity.SellFinalPrice);
+                }
+
+                if (filter.SellFinalPriceTo.HasValue)
+                {
+                    query = query.Where(x => filter.SellFinalPriceTo.Value >= x.Entity.SellFinalPrice);
+                }
+
                 if (!string.IsNullOrEmpty(filter.DealerNotes))
                 {
                     query = query.Where(x => x.Entity.DealerNotes.Contains(filter.DealerNotes));
@@ -432,6 +442,8 @@ namespace Majestic.WarehouseService.Repository.Repository.Cars
                         OwnersPriceTo = filter.OwnersPriceTo,
                         DealersPriceFrom = filter.DealersPriceFrom,
                         DealersPriceTo = filter.DealersPriceTo,
+                        SellFinalPriceFrom = filter.SellFinalPriceFrom,
+                        SellFinalPriceTo = filter.SellFinalPriceTo,
                         DateTimeCreatedFrom = filter.DateTimeCreatedFrom,
                         DateTimeCreatedTo = filter.DateTimeCreatedTo,
                         DealerNotes = filter.DealerNotes,
@@ -455,6 +467,8 @@ namespace Majestic.WarehouseService.Repository.Repository.Cars
                         OwnersPriceTo = filter.OwnersPriceTo,
                         DealersPriceFrom = filter.DealersPriceFrom,
                         DealersPriceTo = filter.DealersPriceTo,
+                        SellFinalPriceFrom = filter.SellFinalPriceFrom,
+                        SellFinalPriceTo = filter.SellFinalPriceTo,
                         DateTimeCreatedFrom = filter.DateTimeCreatedFrom,
                         DateTimeCreatedTo = filter.DateTimeCreatedTo,
                         DealerNotes = filter.DealerNotes,

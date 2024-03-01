@@ -4,5 +4,6 @@ namespace Majestic.WarehouseService.Models.v1.UpdateCars.Request
 {
     public class UpdateCarRequest : CreateCarRequest
     {
+        public decimal? SellFinalPrice { get; set; }
     }
 }
