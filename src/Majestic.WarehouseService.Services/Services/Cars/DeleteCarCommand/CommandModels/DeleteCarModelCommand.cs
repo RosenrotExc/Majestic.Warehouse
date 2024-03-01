@@ -5,11 +5,13 @@ namespace Majestic.WarehouseService.Services.Services.Cars.DeleteCarCommand.Comm
     public class DeleteCarModelCommand
     {
         public string Code { get; set; }
+        public string Message { get; set; }
         public Initiator Initiator { get; }
 
-        public DeleteCarModelCommand(string code, Initiator initiator)
+        public DeleteCarModelCommand(string code, string message, Initiator initiator)
         {
             Code = code;
+            Message = message;
             Initiator = initiator;
         }
     }

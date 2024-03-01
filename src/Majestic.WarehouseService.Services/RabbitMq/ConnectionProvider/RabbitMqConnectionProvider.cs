@@ -15,6 +15,7 @@ namespace Majestic.WarehouseService.Services.RabbitMq.ConnectionProvider
                 Port = int.Parse(configuration["RabbitMQ:Port"]),
                 UserName = configuration["RabbitMQ:UserName"],
                 Password = configuration["RabbitMQ:Password"],
+                DispatchConsumersAsync = true
             };
 
             _connection = factory.CreateConnection();

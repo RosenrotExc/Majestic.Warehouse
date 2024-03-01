@@ -1,8 +1,6 @@
-﻿using Majestic.WarehouseService.Services.DependencyInjection.Configurations;
-using Majestic.WarehouseService.Services.Mappers.Cars;
-using Majestic.WarehouseService.Services.RabbitMq;
+﻿using Majestic.WarehouseService.Services.Mappers.Cars;
 using Majestic.WarehouseService.Services.RabbitMq.ConnectionProvider;
-using Majestic.WarehouseService.Services.RabbitMq.Consumer;
+using Majestic.WarehouseService.Services.RabbitMq.HostedServices.ProcessSellCar;
 using Majestic.WarehouseService.Services.RabbitMq.Publisher;
 using Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand;
 using Majestic.WarehouseService.Services.Services.Cars.DeleteCarCommand;
@@ -33,7 +31,7 @@ namespace Majestic.WarehouseService.Services.DependencyInjection.Modules
 
         public static IServiceCollection AddValidators(this IServiceCollection services)
         {
-            return services.AddTransient<ICreateCarValidator, CreateCarValidator>();
+            return services.AddTransient<ICarValidator, CarValidator>();
         }
 
         public static IServiceCollection AddMappers(this IServiceCollection services)
@@ -50,11 +48,12 @@ namespace Majestic.WarehouseService.Services.DependencyInjection.Modules
 
         public static IServiceCollection AddRabbitMqConsumer(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IConnectionProvider, RabbitMqConnectionProvider>(); 
-            services.AddTransient<IMessageConsumer, RabbitMqMessageConsumer>();
-            services.AddHostedService<Worker>();
+            services.AddTransient<IConnectionProvider, RabbitMqConnectionProvider>();
 
+            #region ProcessSellCar
+            services.AddHostedService<ProcessSellCarHostedService>();
             services.AddTransient<IProcessSellCardHandler, ProcessSellCardHandler>();
+            #endregion
 
             var hostName = configuration["RabbitMQ:HostName"];
             var factory = new ConnectionFactory() { HostName = hostName };

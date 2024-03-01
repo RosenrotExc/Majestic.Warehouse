@@ -13,26 +13,26 @@ namespace Majestic.WarehouseService.Services.Services.Cars.ProcessSellCarCommand
     {
         private readonly ILogger<ProcessSellCarCommandService> _logger;
         private readonly IMessagePublisher _messagePublisher;
-        private readonly ICarMapper _createCarMapper;
-        private readonly ICreateCarValidator _createCarValidator;
+        private readonly ICarMapper _carMapper;
+        private readonly ICarValidator _carValidator;
 
         public ProcessSellCarCommandService(
             ILogger<ProcessSellCarCommandService> logger,
             IMessagePublisher messagePublisher,
-            ICarMapper createCarMapper,
-            ICreateCarValidator createCarValidator)
+            ICarMapper carMapper,
+            ICarValidator carValidator)
         {
             _logger = logger;
             _messagePublisher = messagePublisher;
-            _createCarMapper = createCarMapper;
-            _createCarValidator = createCarValidator;
+            _carMapper = carMapper;
+            _carValidator = carValidator;
         }
 
         public Task<ProcessCarFlowResult> HandleAsync(ProcessSellCarModelCommand command)
         {
-            var eventModel = _createCarMapper.MapProcessSellCarRequestToEvent(command.Request, command.RequestId);
+            var eventModel = _carMapper.MapProcessSellCarRequestToEvent(command.Request, command.RequestId);
 
-            var validateResult = _createCarValidator.Validate(eventModel);
+            var validateResult = _carValidator.Validate(eventModel);
             if (!validateResult.IsSuccess)
             {
                 _logger.LogError("{name} Validation failed {@validationResult} {@command}", nameof(CreateCarCommandService),

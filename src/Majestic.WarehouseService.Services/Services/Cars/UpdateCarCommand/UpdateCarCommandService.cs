@@ -13,21 +13,21 @@ namespace Majestic.WarehouseService.Services.Services.Cars.UpdateCarCommand
     {
         private readonly ILogger<UpdateCarCommandService> _logger;
         private readonly ICarsRepository _carsRepository;
-        private readonly ICreateCarValidator _createCarValidator;
-        private readonly ICarMapper _createCarMapper;
+        private readonly ICarValidator _carValidator;
+        private readonly ICarMapper _carMapper;
         private readonly IDistributedCache _cache;
 
         public UpdateCarCommandService(
             ILogger<UpdateCarCommandService> logger,
             ICarsRepository carsRepository,
-            ICreateCarValidator createCarValidator,
-            ICarMapper createCarMapper,
+            ICarValidator carValidator,
+            ICarMapper carMapper,
             IDistributedCache cache)
         {
             _logger = logger;
             _carsRepository = carsRepository;
-            _createCarValidator = createCarValidator;
-            _createCarMapper = createCarMapper;
+            _carValidator = carValidator;
+            _carMapper = carMapper;
             _cache = cache;
         }
 
@@ -35,7 +35,7 @@ namespace Majestic.WarehouseService.Services.Services.Cars.UpdateCarCommand
         {
             _logger.LogInformation("{name} {@command}", nameof(UpdateCarCommandService), command);
 
-            var validationResult = _createCarValidator.Validate(command.Request);
+            var validationResult = _carValidator.Validate(command.Request);
             if (!validationResult.IsSuccess)
             {
                 _logger.LogError("{name} Validation failed {@validationResult} {@command}", nameof(UpdateCarCommandService),
@@ -43,7 +43,7 @@ namespace Majestic.WarehouseService.Services.Services.Cars.UpdateCarCommand
                 return UpdateCarFlowResult.ValidationError(validationResult);
             }
 
-            var mappedModel = _createCarMapper.MapCarRequestToCarEntity(command.Request);
+            var mappedModel = _carMapper.MapCarRequestToCarEntity(command.Request);
 
             var result = await _carsRepository.UpdateCarAsync(command.Code, mappedModel, command.Initiator);
             if (!result.IsSuccess)

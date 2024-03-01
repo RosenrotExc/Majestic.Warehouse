@@ -13,22 +13,22 @@ namespace Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand
     {
         private readonly ILogger<CreateCarCommandService> _logger;
         private readonly ICarsRepository _carsRepository;
-        private readonly ICreateCarValidator _createCarValidator;
-        private readonly ICarMapper _createCarMapper;
+        private readonly ICarValidator _carValidator;
+        private readonly ICarMapper _carMapper;
         private readonly IDistributedCache _cache;
 
         public CreateCarCommandService(
             ILogger<CreateCarCommandService> logger,
             ICarsRepository carsRepository,
-            ICreateCarValidator createCarValidator,
-            ICarMapper createCarMapper,
+            ICarValidator carValidator,
+            ICarMapper carMapper,
             IDistributedCache cache)
 
         {
             _logger = logger;
             _carsRepository = carsRepository;
-            _createCarValidator = createCarValidator;
-            _createCarMapper = createCarMapper;
+            _carValidator = carValidator;
+            _carMapper = carMapper;
             _cache = cache;
         }
 
@@ -36,7 +36,7 @@ namespace Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand
         {
             _logger.LogInformation("{name} {@command}", nameof(CreateCarCommandService), command);
 
-            var validationResult = _createCarValidator.Validate(command.Request.Requests);
+            var validationResult = _carValidator.Validate(command.Request.Requests);
             if (!validationResult.IsSuccess)
             {
                 _logger.LogError("{name} Validation failed {@validationResult} {@command}", nameof(CreateCarCommandService),
@@ -44,7 +44,7 @@ namespace Majestic.WarehouseService.Services.Services.Cars.CreateCarCommand
                 return CreateCarFlowResult.ValidationError(validationResult);
             }
 
-            var mappedModels = command.Request.Requests.Select(x => _createCarMapper.MapCarRequestToCarEntity(x)).ToList();
+            var mappedModels = command.Request.Requests.Select(x => _carMapper.MapCarRequestToCarEntity(x)).ToList();
 
             var result = await _carsRepository.CreateCarAsync(mappedModels, command.Initiator);
             if (!result.IsSuccess)

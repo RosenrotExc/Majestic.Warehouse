@@ -142,7 +142,7 @@ namespace Majestic.WarehouseService.Repository.Repository.Cars
             }
         }
 
-        public async Task<ServiceResult> DeleteCarAsync(string code, InitiatorServiceModel initiator)
+        public async Task<ServiceResult> DeleteCarAsync(string code, string message, InitiatorServiceModel initiator)
         {
             try
             {
@@ -187,6 +187,7 @@ namespace Majestic.WarehouseService.Repository.Repository.Cars
                     StateId = (byte)State.Values.Deleted,
                     CreateDateTime = utcNow,
                     ExpireDateTime = utcNow,
+                    Message = message
                 };
 
                 entityState.ExpireDateTime = utcNow;

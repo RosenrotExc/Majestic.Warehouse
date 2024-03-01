@@ -10,7 +10,7 @@ namespace Majestic.WarehouseService.Repository.Repository.Cars
     {
         Task<ServiceResult> CreateCarAsync(List<CarEntity> entity, InitiatorServiceModel initiator);
         Task<ServiceResult> UpdateCarAsync(string code, CarEntity entity, InitiatorServiceModel initiator);
-        Task<ServiceResult> DeleteCarAsync(string code, InitiatorServiceModel initiator);
+        Task<ServiceResult> DeleteCarAsync(string code, string message, InitiatorServiceModel initiator);
         Task<PaginatedServiceResultWrapper<IEnumerable<CarEntity>, GetCarFilter>> QueryCarsAsync(GetCarFilter filter);
         Task<ServiceResultWrapper<GetCarsMetricsResponse>> QueryMetricsAsync();
     }

@@ -108,7 +108,7 @@ namespace Majestic.WarehouseService.WebApi.Controllers.v1
         {
             var initiator = User.GetStubInitiator();
 
-            var result = await command.HandleAsync(new DeleteCarModelCommand(code, initiator));
+            var result = await command.HandleAsync(new DeleteCarModelCommand(code, null, initiator));
 
             if (result.Successful)
             {

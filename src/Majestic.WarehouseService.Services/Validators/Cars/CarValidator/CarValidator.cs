@@ -4,7 +4,7 @@ using Majestic.WarehouseService.Models.v1.ProcessCarSell.Event;
 
 namespace Majestic.WarehouseService.Services.Validators.Cars.CreateCarValidator
 {
-    public class CreateCarValidator : ICreateCarValidator
+    public class CarValidator : ICarValidator
     {
         public ServiceResult Validate(IEnumerable<CreateCarRequest> requests)
         {

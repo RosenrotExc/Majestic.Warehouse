@@ -19,7 +19,7 @@ namespace Majestic.WarehouseService.Services.Services.Cars.GetCarsMetrics
         public GetCarsMetricsQueryService(
             ILogger<GetCarsMetricsQueryService> logger,
             ICarsRepository carsRepository,
-            ICarMapper createCarMapper,
+            ICarMapper carMapper,
             IDistributedCache cache)
         {
             _logger = logger;

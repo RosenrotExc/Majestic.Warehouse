@@ -14,21 +14,21 @@ namespace Majestic.WarehouseService.Services.Services.Cars.DeleteCarCommand
     {
         private readonly ILogger<DeleteCarCommandService> _logger;
         private readonly ICarsRepository _carsRepository;
-        private readonly ICreateCarValidator _createCarValidator;
-        private readonly ICarMapper _createCarMapper;
+        private readonly ICarValidator _carValidator;
+        private readonly ICarMapper _carMapper;
         private readonly IDistributedCache _cache;
 
         public DeleteCarCommandService(
             ILogger<DeleteCarCommandService> logger,
             ICarsRepository carsRepository,
-            ICreateCarValidator createCarValidator,
-            ICarMapper createCarMapper,
+            ICarValidator carValidator,
+            ICarMapper carMapper,
             IDistributedCache cache)
         {
             _logger = logger;
             _carsRepository = carsRepository;
-            _createCarValidator = createCarValidator;
-            _createCarMapper = createCarMapper;
+            _carValidator = carValidator;
+            _carMapper = carMapper;
             _cache = cache;
         }
 
@@ -36,7 +36,9 @@ namespace Majestic.WarehouseService.Services.Services.Cars.DeleteCarCommand
         {
             _logger.LogInformation("{name} {@command}", nameof(DeleteCarCommandService), command);
 
-            var result = await _carsRepository.DeleteCarAsync(command.Code, command.Initiator);
+            const string DeleteMessage = "Record is removed";
+            command.Message ??= DeleteMessage;
+            var result = await _carsRepository.DeleteCarAsync(command.Code, command.Message, command.Initiator);
             if (!result.IsSuccess)
             {
                 _logger.LogError("{name} Failed to delete car {@command}", nameof(DeleteCarCommandService),

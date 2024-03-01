@@ -13,16 +13,16 @@ namespace Majestic.WarehouseService.Services.Services.Cars.GetCarQuery
     {
         private readonly ILogger<GetCarQueryService> _logger;
         private readonly ICarsRepository _carsRepository;
-        private readonly ICarMapper _createCarMapper;
+        private readonly ICarMapper _carMapper;
 
         public GetCarQueryService(
             ILogger<GetCarQueryService> logger, 
             ICarsRepository carsRepository,
-            ICarMapper createCarMapper)
+            ICarMapper carMapper)
         {
             _logger = logger;
             _carsRepository = carsRepository;
-            _createCarMapper = createCarMapper;
+            _carMapper = carMapper;
         }
 
         public async Task<GetCarsFlowResult> HandleAsync(GetCarsModelQuery query)
@@ -36,7 +36,7 @@ namespace Majestic.WarehouseService.Services.Services.Cars.GetCarQuery
                 return GetCarsFlowResult.FailedToGetCars();
             }
 
-            var mapperResult = result.Value.Select(x => _createCarMapper.MapCarEntityToCarResponse(x));
+            var mapperResult = result.Value.Select(x => _carMapper.MapCarEntityToCarResponse(x));
             
             var response = new PaginatedServiceResultWrapper<IEnumerable<GetCarResponse>, GetCarFilter>
             {
