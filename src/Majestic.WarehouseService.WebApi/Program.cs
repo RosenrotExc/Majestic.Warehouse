@@ -1,5 +1,6 @@
-using Serilog;
+﻿using Serilog;
 using Serilog.Events;
+using Serilog.Sinks.Elasticsearch;
 
 namespace Majestic.WarehouseService.WebApi
 {
@@ -7,11 +8,13 @@ namespace Majestic.WarehouseService.WebApi
     {
         public static async Task Main(string[] args)
         {
+            var configurations = GetConfigurations();
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
+                .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(configurations["Elasticsearch:Uri"])))
                 .CreateLogger();
 
             try
@@ -37,5 +40,11 @@ namespace Majestic.WarehouseService.WebApi
                     webBuilder.UseStartup<Startup>();
                 })
                 .UseSerilog();
+
+        private static IConfigurationRoot GetConfigurations() =>
+            new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
     }
 }

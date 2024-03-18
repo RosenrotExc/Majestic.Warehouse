@@ -20,7 +20,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{617E4D32-AEAB-4CCA-B755-5913BDF3EBD8}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
-		DockerfileRabbitMq = DockerfileRabbitMq
 	EndProjectSection
 EndProject
 Global

@@ -1,6 +1,33 @@
 version: '3.8'
 
 services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.1
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+    networks:
+      - app-network
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.1
+    volumes:
+      - ./logstash/config:/usr/share/logstash/config
+    depends_on:
+      - elasticsearch
+    networks:
+      - app-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.1
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - app-network
+
   warehouse-webapi:
     build:
       context: .
@@ -11,6 +38,7 @@ services:
       - rabbitmq
       - redis
       - sql_server
+      - logstash
     networks:
       - app-network
 
@@ -22,6 +50,7 @@ services:
       - rabbitmq
       - redis
       - sql_server
+      - logstash
     networks:
       - app-network
 
